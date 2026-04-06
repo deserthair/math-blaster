@@ -938,71 +938,1142 @@ class GameScene extends Phaser.Scene {
   generateCampaignBackground(colors) {
     const g = this.make.graphics({ add: false });
     const w = 800, h = 600;
+    const style = this.campaignLevel.bgStyle;
+
+    // Sky gradient
     g.fillGradientStyle(colors.sky1, colors.sky1, colors.sky2, colors.sky2);
     g.fillRect(0, 0, w, h);
-    // Atmospheric details
-    g.fillStyle(colors.accent, 0.15);
-    for (let i = 0; i < 30; i++) {
-      const sx = Phaser.Math.Between(0, w);
-      const sy = Phaser.Math.Between(0, h * 0.7);
-      g.fillRect(sx, sy, Phaser.Math.Between(1, 3), Phaser.Math.Between(1, 3));
+
+    if (style === 'forest') {
+      // Dense trees in background
+      for (let i = 0; i < 12; i++) {
+        const tx = Phaser.Math.Between(0, w);
+        const th = Phaser.Math.Between(120, 250);
+        const tw = Phaser.Math.Between(30, 50);
+        // Trunk
+        g.fillStyle(0x3a2510);
+        g.fillRect(tx, h - th - 80, 12, th);
+        // Canopy layers
+        g.fillStyle(0x1a5a1a, 0.8);
+        g.fillCircle(tx + 6, h - th - 80, tw);
+        g.fillStyle(0x2a7a2a, 0.6);
+        g.fillCircle(tx + 6, h - th - 60, tw - 8);
+      }
+      // Glowing mushrooms
+      g.fillStyle(0x44ff44, 0.4);
+      for (let i = 0; i < 15; i++) {
+        const mx = Phaser.Math.Between(0, w);
+        const my = Phaser.Math.Between(h * 0.6, h * 0.8);
+        g.fillCircle(mx, my, Phaser.Math.Between(3, 8));
+      }
+      // Fireflies
+      g.fillStyle(0xaaff44, 0.6);
+      for (let i = 0; i < 20; i++) {
+        g.fillRect(Phaser.Math.Between(0, w), Phaser.Math.Between(0, h * 0.7), 2, 2);
+      }
+
+    } else if (style === 'ocean') {
+      // Waves in background
+      for (let row = 0; row < 6; row++) {
+        const wy = 200 + row * 60;
+        g.fillStyle(colors.sky2, 0.3 + row * 0.08);
+        for (let wx = 0; wx < w; wx += 40) {
+          g.fillRect(wx, wy + Math.sin(wx * 0.05) * 10, 30, 8);
+        }
+      }
+      // Distant ship
+      g.fillStyle(0x5a3a1a);
+      g.fillRect(600, 150, 40, 20);
+      g.fillRect(615, 120, 4, 30);
+      g.fillStyle(0xeeeeee);
+      g.fillRect(619, 125, 15, 10);
+      // Storm clouds
+      g.fillStyle(0x2a3a4a, 0.5);
+      g.fillCircle(150, 60, 80);
+      g.fillCircle(250, 50, 60);
+      g.fillCircle(500, 70, 70);
+      // Lightning flash
+      g.fillStyle(0xffff88, 0.15);
+      g.fillRect(180, 100, 2, 80);
+      g.fillRect(182, 140, 2, 60);
+
+    } else if (style === 'cave') {
+      // Stalactites from ceiling
+      for (let i = 0; i < 20; i++) {
+        const sx = Phaser.Math.Between(0, w);
+        const sl = Phaser.Math.Between(30, 100);
+        g.fillStyle(0x3a2a1a);
+        g.fillRect(sx, 0, 8, sl);
+        g.fillRect(sx + 2, sl, 4, 10);
+      }
+      // Lava pools glowing
+      g.fillStyle(0xff4400, 0.3);
+      for (let i = 0; i < 8; i++) {
+        const lx = Phaser.Math.Between(0, w);
+        const ly = Phaser.Math.Between(h * 0.7, h * 0.85);
+        g.fillCircle(lx, ly, Phaser.Math.Between(15, 40));
+      }
+      g.fillStyle(0xff6600, 0.15);
+      for (let i = 0; i < 12; i++) {
+        g.fillCircle(Phaser.Math.Between(0, w), Phaser.Math.Between(h * 0.6, h * 0.9), Phaser.Math.Between(5, 20));
+      }
+      // Glowing crystals
+      g.fillStyle(0x8866cc, 0.5);
+      for (let i = 0; i < 10; i++) {
+        const cx = Phaser.Math.Between(0, w);
+        const cy = Phaser.Math.Between(100, h * 0.7);
+        g.fillRect(cx, cy, 4, Phaser.Math.Between(10, 25));
+        g.fillRect(cx - 3, cy + 5, 3, Phaser.Math.Between(8, 18));
+      }
+
+    } else if (style === 'castle') {
+      // Castle walls in background
+      g.fillStyle(0x444455);
+      g.fillRect(0, 200, w, 400);
+      // Stone pattern
+      g.fillStyle(0x555566);
+      for (let row = 0; row < 10; row++) {
+        const offset = row % 2 === 0 ? 0 : 30;
+        for (let col = 0; col < 15; col++) {
+          g.fillRect(offset + col * 60, 200 + row * 40, 58, 38);
+        }
+      }
+      // Towers
+      g.fillStyle(0x333344);
+      g.fillRect(50, 80, 60, 300);
+      g.fillRect(690, 100, 60, 280);
+      // Battlements
+      for (let i = 0; i < 4; i++) {
+        g.fillRect(50 + i * 20, 65, 12, 20);
+        g.fillRect(690 + i * 20, 85, 12, 20);
+      }
+      // Purple magic aura
+      g.fillStyle(0x8844cc, 0.1);
+      g.fillCircle(400, 200, 200);
+      // Torches
+      g.fillStyle(0xff8800, 0.6);
+      g.fillCircle(200, 300, 10);
+      g.fillCircle(400, 280, 10);
+      g.fillCircle(600, 310, 10);
+
+    } else if (style === 'void') {
+      // Alien geometry / Eldrazi dimension
+      // Swirling void patterns
+      g.fillStyle(0x6633aa, 0.2);
+      for (let i = 0; i < 8; i++) {
+        const cx = Phaser.Math.Between(100, w - 100);
+        const cy = Phaser.Math.Between(100, h - 100);
+        for (let r = 80; r > 10; r -= 15) {
+          g.fillCircle(cx + Math.sin(r) * 20, cy + Math.cos(r) * 20, r);
+        }
+      }
+      // Floating geometric shards
+      g.fillStyle(0xcc44ff, 0.3);
+      for (let i = 0; i < 15; i++) {
+        const sx = Phaser.Math.Between(0, w);
+        const sy = Phaser.Math.Between(0, h);
+        g.fillRect(sx, sy, Phaser.Math.Between(5, 30), Phaser.Math.Between(2, 8));
+        g.fillRect(sx + 5, sy - 10, Phaser.Math.Between(2, 8), Phaser.Math.Between(10, 30));
+      }
+      // Stars being consumed
+      g.fillStyle(0xffffff, 0.5);
+      for (let i = 0; i < 20; i++) {
+        g.fillRect(Phaser.Math.Between(0, w), Phaser.Math.Between(0, h * 0.5), 2, 2);
+      }
+      // Cracks in reality
+      g.fillStyle(0xff44ff, 0.25);
+      for (let i = 0; i < 5; i++) {
+        let cx = Phaser.Math.Between(0, w);
+        let cy = Phaser.Math.Between(0, h);
+        for (let j = 0; j < 8; j++) {
+          g.fillRect(cx, cy, 3, 3);
+          cx += Phaser.Math.Between(-15, 15);
+          cy += Phaser.Math.Between(-15, 15);
+        }
+      }
+
+    } else if (style === 'streets') {
+      // NYC buildings in background
+      const buildingColors = [0x556677, 0x445566, 0x667788, 0x778899];
+      for (let i = 0; i < 10; i++) {
+        const bx = i * 85;
+        const bh = Phaser.Math.Between(200, 400);
+        g.fillStyle(Phaser.Math.RND.pick(buildingColors));
+        g.fillRect(bx, h - bh - 80, 75, bh);
+        // Windows
+        g.fillStyle(0xffff88, 0.6);
+        for (let wy = h - bh - 60; wy < h - 100; wy += 25) {
+          for (let wx = bx + 8; wx < bx + 70; wx += 18) {
+            if (Math.random() > 0.3) {
+              g.fillRect(wx, wy, 10, 14);
+            }
+          }
+        }
+      }
+      // Sky with clouds
+      g.fillStyle(0xffffff, 0.3);
+      g.fillCircle(200, 80, 40);
+      g.fillCircle(240, 75, 35);
+      g.fillCircle(550, 90, 45);
+      g.fillCircle(590, 85, 30);
+      // Sun
+      g.fillStyle(0xffdd44, 0.5);
+      g.fillCircle(700, 60, 35);
+
+    } else if (style === 'boutique') {
+      // Shop fronts
+      for (let i = 0; i < 4; i++) {
+        const sx = i * 210;
+        g.fillStyle(0xeeddcc);
+        g.fillRect(sx, 150, 200, 350);
+        // Shop window
+        g.fillStyle(0xccddee);
+        g.fillRect(sx + 15, 200, 170, 150);
+        // Awning
+        g.fillStyle(Phaser.Math.RND.pick([0xff69b4, 0xff99cc, 0xcc66aa, 0xffaacc]));
+        g.fillRect(sx, 170, 200, 25);
+        // Mannequin silhouettes in window
+        g.fillStyle(0x000000, 0.15);
+        g.fillRect(sx + 50, 230, 15, 40);
+        g.fillCircle(sx + 57, 225, 8);
+        g.fillRect(sx + 120, 230, 15, 40);
+        g.fillCircle(sx + 127, 225, 8);
+      }
+      // Sparkles
+      g.fillStyle(0xffd700, 0.4);
+      for (let i = 0; i < 20; i++) {
+        g.fillRect(Phaser.Math.Between(0, w), Phaser.Math.Between(0, h * 0.4), 3, 3);
+      }
+
+    } else if (style === 'subway') {
+      // Tunnel walls
+      g.fillStyle(0x3a3a3a);
+      g.fillRect(0, 0, w, 150);
+      g.fillRect(0, h - 150, w, 150);
+      // Tiles
+      g.fillStyle(0x4a4a4a);
+      for (let i = 0; i < w; i += 30) {
+        g.fillRect(i, 0, 28, 148);
+        g.fillRect(i, h - 148, 28, 148);
+      }
+      // Subway signs
+      g.fillStyle(0x00aa00);
+      g.fillCircle(200, 100, 20);
+      g.fillStyle(0xffffff);
+      g.fillCircle(200, 100, 15);
+      g.fillStyle(0x00aa00);
+      g.fillRect(188, 96, 24, 8);
+      // Tracks / rails
+      g.fillStyle(0x888888);
+      g.fillRect(0, h - 90, w, 3);
+      g.fillRect(0, h - 70, w, 3);
+      // Dim lighting
+      g.fillStyle(0xffaa00, 0.08);
+      for (let i = 0; i < w; i += 200) {
+        g.fillCircle(i + 100, 120, 80);
+      }
+
+    } else if (style === 'backstage') {
+      // Curtains on sides
+      g.fillStyle(0x880033);
+      g.fillRect(0, 0, 80, h);
+      g.fillRect(w - 80, 0, 80, h);
+      // Curtain folds
+      g.fillStyle(0x660022);
+      for (let y = 0; y < h; y += 40) {
+        g.fillRect(0, y, 15, 38);
+        g.fillRect(30, y, 15, 38);
+        g.fillRect(w - 80, y, 15, 38);
+        g.fillRect(w - 50, y, 15, 38);
+      }
+      // Mirrors with lights
+      for (let i = 0; i < 3; i++) {
+        const mx = 200 + i * 200;
+        g.fillStyle(0xaaaaaa);
+        g.fillRect(mx, 100, 80, 120);
+        g.fillStyle(0xccddee);
+        g.fillRect(mx + 5, 105, 70, 110);
+        // Bulbs around mirror
+        g.fillStyle(0xffffcc);
+        for (let b = 0; b < 6; b++) {
+          g.fillCircle(mx + b * 16, 98, 5);
+          g.fillCircle(mx + b * 16, 225, 5);
+        }
+      }
+      // Cables on floor
+      g.fillStyle(0x222222);
+      for (let i = 0; i < 8; i++) {
+        const cy = Phaser.Math.Between(h * 0.6, h * 0.85);
+        g.fillRect(Phaser.Math.Between(80, w - 80), cy, Phaser.Math.Between(60, 200), 3);
+      }
+
+    } else if (style === 'runway') {
+      // Grand venue
+      g.fillStyle(0x1a1a2e);
+      g.fillRect(0, 0, w, h);
+      // Spotlights
+      g.fillStyle(0xffffff, 0.08);
+      g.fillCircle(200, -50, 250);
+      g.fillCircle(400, -50, 300);
+      g.fillCircle(600, -50, 250);
+      // Audience silhouettes
+      g.fillStyle(0x222233);
+      for (let i = 0; i < 30; i++) {
+        const ax = Phaser.Math.Between(50, w - 50);
+        const ay = Phaser.Math.Between(300, 420);
+        g.fillCircle(ax, ay, 10);
+        g.fillRect(ax - 8, ay + 8, 16, 15);
+      }
+      // Camera flashes
+      g.fillStyle(0xffffff, 0.5);
+      for (let i = 0; i < 8; i++) {
+        const fx = Phaser.Math.Between(0, w);
+        const fy = Phaser.Math.Between(250, 400);
+        g.fillRect(fx, fy, 4, 4);
+        g.fillStyle(0xffffff, 0.2);
+        g.fillRect(fx - 6, fy - 1, 16, 2);
+        g.fillRect(fx + 1, fy - 6, 2, 16);
+        g.fillStyle(0xffffff, 0.5);
+      }
+      // Golden trim
+      g.fillStyle(0xffd700, 0.3);
+      g.fillRect(0, h - 120, w, 3);
     }
+
     g.generateTexture('background', w, h);
     g.destroy();
   }
 
   generateCampaignGround(colors) {
     const g = this.make.graphics({ add: false });
-    g.fillStyle(colors.ground1);
-    g.fillRect(0, 0, 64, 32);
-    g.fillStyle(colors.ground2);
-    for (let i = 0; i < 8; i++) {
-      g.fillRect(Phaser.Math.Between(0, 56), Phaser.Math.Between(0, 28), 8, 4);
+    const style = this.campaignLevel.bgStyle;
+
+    if (style === 'forest') {
+      g.fillStyle(0x2d5a27);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0x3a7a32);
+      for (let i = 0; i < 6; i++) g.fillRect(Phaser.Math.Between(0, 56), Phaser.Math.Between(0, 8), 8, 4);
+      g.fillStyle(0x5a3a1a);
+      g.fillRect(0, 12, 64, 20);
+      // Roots
+      g.fillStyle(0x4a2a10);
+      for (let i = 0; i < 4; i++) g.fillRect(Phaser.Math.Between(0, 56), Phaser.Math.Between(12, 28), 10, 3);
+      // Small mushrooms
+      g.fillStyle(0x44ff44, 0.5);
+      g.fillRect(20, 8, 4, 4);
+      g.fillRect(50, 10, 3, 3);
+
+    } else if (style === 'ocean') {
+      // Ship deck
+      g.fillStyle(0x7a5a3a);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0x8a6a4a);
+      for (let i = 0; i < 64; i += 10) g.fillRect(i, 0, 8, 32);
+      // Deck planks
+      g.fillStyle(0x6a4a2a);
+      g.fillRect(0, 15, 64, 2);
+      // Nails
+      g.fillStyle(0x888888);
+      for (let i = 5; i < 64; i += 12) g.fillRect(i, 7, 2, 2);
+
+    } else if (style === 'cave') {
+      g.fillStyle(0x3a2a1a);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0x4a3a2a);
+      for (let i = 0; i < 6; i++) g.fillRect(Phaser.Math.Between(0, 56), Phaser.Math.Between(0, 28), 8, 4);
+      // Lava cracks
+      g.fillStyle(0xff4400, 0.5);
+      g.fillRect(15, 5, 12, 2);
+      g.fillRect(40, 18, 8, 2);
+      g.fillStyle(0xff6600, 0.3);
+      g.fillRect(14, 7, 2, 4);
+      g.fillRect(42, 20, 2, 3);
+
+    } else if (style === 'castle') {
+      // Stone floor
+      g.fillStyle(0x444455);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0x555566);
+      for (let i = 0; i < 64; i += 16) {
+        g.fillRect(i, 0, 14, 14);
+        g.fillRect(i + 8, 16, 14, 14);
+      }
+      // Moss
+      g.fillStyle(0x336633, 0.4);
+      g.fillRect(5, 2, 4, 3);
+      g.fillRect(40, 20, 5, 3);
+
+    } else if (style === 'void') {
+      g.fillStyle(0x2a1a3a);
+      g.fillRect(0, 0, 64, 32);
+      // Fractured reality
+      g.fillStyle(0x4a2a5a);
+      for (let i = 0; i < 64; i += 8) {
+        g.fillRect(i, Phaser.Math.Between(0, 10), 6, Phaser.Math.Between(8, 20));
+      }
+      // Glowing cracks
+      g.fillStyle(0xcc44ff, 0.5);
+      g.fillRect(10, 12, 20, 2);
+      g.fillRect(35, 5, 15, 2);
+      g.fillRect(20, 14, 2, 8);
+
+    } else if (style === 'streets') {
+      // Concrete sidewalk
+      g.fillStyle(0x888888);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0x999999);
+      for (let i = 0; i < 64; i += 16) g.fillRect(i, 0, 14, 30);
+      // Sidewalk cracks
+      g.fillStyle(0x666666);
+      g.fillRect(15, 0, 2, 32);
+      g.fillRect(47, 0, 2, 32);
+      // Gum spots
+      g.fillStyle(0x555555);
+      g.fillRect(8, 12, 3, 3);
+      g.fillRect(35, 22, 3, 2);
+
+    } else if (style === 'boutique') {
+      // Fancy tile floor
+      g.fillStyle(0xddaa88);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0xeecc99);
+      for (let i = 0; i < 64; i += 16) {
+        for (let j = 0; j < 32; j += 16) {
+          if ((i + j) % 32 === 0) g.fillRect(i, j, 14, 14);
+        }
+      }
+      // Pink carpet strip
+      g.fillStyle(0xff99bb, 0.5);
+      g.fillRect(0, 12, 64, 8);
+
+    } else if (style === 'subway') {
+      // Platform
+      g.fillStyle(0x555555);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0x666666);
+      for (let i = 0; i < 64; i += 8) g.fillRect(i, 0, 6, 30);
+      // Yellow safety line
+      g.fillStyle(0xffcc00);
+      g.fillRect(0, 0, 64, 4);
+      // Grime
+      g.fillStyle(0x444444);
+      for (let i = 0; i < 5; i++) g.fillRect(Phaser.Math.Between(0, 56), Phaser.Math.Between(8, 28), 4, 3);
+
+    } else if (style === 'backstage') {
+      // Stage floor
+      g.fillStyle(0x554444);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0x665555);
+      for (let i = 0; i < 64; i += 12) g.fillRect(i, 0, 10, 30);
+      // Cables
+      g.fillStyle(0x222222);
+      g.fillRect(5, 15, 25, 2);
+      g.fillRect(40, 8, 20, 2);
+      // Tape marks
+      g.fillStyle(0xffff00, 0.4);
+      g.fillRect(30, 10, 8, 4);
+
+    } else if (style === 'runway') {
+      // Golden runway
+      g.fillStyle(0xcc9966);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(0xddaa77);
+      for (let i = 0; i < 64; i += 16) g.fillRect(i, 0, 14, 30);
+      // Center strip
+      g.fillStyle(0xffd700, 0.4);
+      g.fillRect(24, 0, 16, 32);
+      // Sparkle accents
+      g.fillStyle(0xffffff, 0.4);
+      g.fillRect(10, 8, 2, 2);
+      g.fillRect(45, 20, 2, 2);
+      g.fillRect(30, 5, 2, 2);
+
+    } else {
+      // Fallback
+      g.fillStyle(colors.ground1);
+      g.fillRect(0, 0, 64, 32);
+      g.fillStyle(colors.ground2);
+      for (let i = 0; i < 8; i++) g.fillRect(Phaser.Math.Between(0, 56), Phaser.Math.Between(0, 28), 8, 4);
     }
-    g.fillStyle(colors.accent, 0.3);
-    g.fillRect(0, 0, 64, 2);
+
     g.generateTexture('ground', 64, 32);
     g.destroy();
   }
 
   generateCampaignEnemies(enemyDefs) {
+    const style = this.campaignLevel.bgStyle;
+
     enemyDefs.forEach((def, idx) => {
       const g = this.make.graphics({ add: false });
       const s = 4;
       const oy = 2 * s;
-      const c = def.color;
-      const lighter = Phaser.Display.Color.IntegerToColor(c);
-      const darkC = Phaser.Display.Color.GetColor(
-        Math.max(0, lighter.red - 40),
-        Math.max(0, lighter.green - 40),
-        Math.max(0, lighter.blue - 40)
-      );
 
-      // Body
-      g.fillStyle(c);
-      g.fillRect(2*s, oy + 1*s, 4*s, 6*s);
-      // Head
-      g.fillStyle(darkC);
-      g.fillRect(2.5*s, oy + 0*s, 3*s, 2*s);
-      // Eyes
-      g.fillStyle(0xff0000);
-      g.fillRect(3*s, oy + 0.5*s, 0.8*s, 0.8*s);
-      g.fillRect(5*s, oy + 0.5*s, 0.8*s, 0.8*s);
-      // Legs
-      g.fillStyle(darkC);
-      g.fillRect(2*s, oy + 7*s, 1.5*s, 2*s);
-      g.fillRect(4.5*s, oy + 7*s, 1.5*s, 2*s);
-      // Detail based on index
-      if (idx === 1) {
-        g.fillStyle(0xffffff, 0.3);
-        g.fillRect(3*s, oy + 3*s, 2*s, 1*s);
-      } else if (idx === 2) {
+      // ===== MTG ENEMIES =====
+      if (style === 'forest') {
+        if (idx === 0) {
+          // Mirkwood Bat - dark wings spread
+          g.fillStyle(0x443355);
+          g.fillRect(3*s, oy + 1*s, 2*s, 2*s); // body
+          g.fillStyle(0x332244);
+          g.fillRect(0*s, oy + 0*s, 3*s, 3*s); // left wing
+          g.fillRect(5*s, oy + 0*s, 3*s, 3*s); // right wing
+          g.fillStyle(0xff0000);
+          g.fillRect(3.5*s, oy + 1*s, 0.5*s, 0.5*s);
+          g.fillRect(4.5*s, oy + 1*s, 0.5*s, 0.5*s);
+          // Fangs
+          g.fillStyle(0xffffff);
+          g.fillRect(3.5*s, oy + 2.5*s, 0.5*s, 0.5*s);
+          g.fillRect(4.5*s, oy + 2.5*s, 0.5*s, 0.5*s);
+          // Feet
+          g.fillStyle(0x443355);
+          g.fillRect(3*s, oy + 3*s, 1*s, 1*s);
+          g.fillRect(4.5*s, oy + 3*s, 1*s, 1*s);
+        } else if (idx === 1) {
+          // Rat - scurrying
+          g.fillStyle(0x665544);
+          g.fillRect(1*s, oy + 3*s, 5*s, 3*s); // body
+          g.fillRect(0*s, oy + 2*s, 2*s, 2*s); // head
+          g.fillStyle(0xff4444);
+          g.fillRect(0.5*s, oy + 2.5*s, 0.5*s, 0.5*s); // eye
+          // Tail
+          g.fillStyle(0x997766);
+          g.fillRect(6*s, oy + 4*s, 2*s, 1*s);
+          // Legs
+          g.fillStyle(0x554433);
+          g.fillRect(1*s, oy + 6*s, 1*s, 2*s);
+          g.fillRect(3*s, oy + 6*s, 1*s, 2*s);
+          g.fillRect(5*s, oy + 6*s, 1*s, 1.5*s);
+          // Whiskers
+          g.fillStyle(0xcccccc);
+          g.fillRect(0*s, oy + 3*s, 0.5*s, 0.3*s);
+        } else {
+          // Orc - green brute with weapon
+          g.fillStyle(0x44aa44);
+          g.fillRect(2*s, oy + 0*s, 4*s, 3*s); // head
+          g.fillStyle(0xff0000);
+          g.fillRect(3*s, oy + 1*s, 1*s, 0.5*s);
+          g.fillRect(5*s, oy + 1*s, 1*s, 0.5*s);
+          // Tusks
+          g.fillStyle(0xeeddcc);
+          g.fillRect(2.5*s, oy + 2.5*s, 0.5*s, 1*s);
+          g.fillRect(5.5*s, oy + 2.5*s, 0.5*s, 1*s);
+          // Armor body
+          g.fillStyle(0x556633);
+          g.fillRect(2*s, oy + 3*s, 5*s, 5*s);
+          g.fillStyle(0x888888);
+          g.fillRect(3*s, oy + 3.5*s, 3*s, 2*s); // chest plate
+          // Axe
+          g.fillStyle(0x8B4513);
+          g.fillRect(7*s, oy + 1*s, 1*s, 6*s);
+          g.fillStyle(0xaaaaaa);
+          g.fillRect(6.5*s, oy + 1*s, 2*s, 2*s);
+          // Legs
+          g.fillStyle(0x44aa44);
+          g.fillRect(2*s, oy + 8*s, 2*s, 2*s);
+          g.fillRect(5*s, oy + 8*s, 2*s, 2*s);
+        }
+
+      } else if (style === 'ocean') {
+        if (idx === 0) {
+          // Ship Rat
+          g.fillStyle(0x665544);
+          g.fillRect(1*s, oy + 3*s, 5*s, 3*s);
+          g.fillRect(0*s, oy + 2*s, 2*s, 2*s);
+          g.fillStyle(0xff4444);
+          g.fillRect(0.5*s, oy + 2.5*s, 0.5*s, 0.5*s);
+          g.fillStyle(0x997766);
+          g.fillRect(6*s, oy + 4*s, 2*s, 1*s);
+          g.fillStyle(0x554433);
+          g.fillRect(1*s, oy + 6*s, 1*s, 2*s);
+          g.fillRect(4*s, oy + 6*s, 1*s, 2*s);
+        } else if (idx === 1) {
+          // Pirate - hat, eyepatch, sword
+          g.fillStyle(0x222222);
+          g.fillRect(2*s, oy + 0*s, 5*s, 1.5*s); // hat
+          g.fillRect(1*s, oy + 1*s, 7*s, 1*s); // brim
+          // Skull on hat
+          g.fillStyle(0xffffff);
+          g.fillRect(4*s, oy + 0.3*s, 1*s, 0.8*s);
+          // Face
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 2*s, 3*s, 2.5*s);
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 2.5*s, 2*s, 0.5*s); // eyepatch
+          g.fillStyle(0x000000);
+          g.fillRect(5*s, oy + 3*s, 0.5*s, 0.5*s); // good eye
+          // Beard
+          g.fillStyle(0x5a3a1a);
+          g.fillRect(3*s, oy + 4*s, 3*s, 1*s);
+          // Coat
+          g.fillStyle(0xaa4422);
+          g.fillRect(2*s, oy + 4.5*s, 5*s, 4*s);
+          g.fillStyle(0xffd700);
+          g.fillRect(4*s, oy + 5*s, 1*s, 1*s); // buckle
+          // Sword
+          g.fillStyle(0xcccccc);
+          g.fillRect(7*s, oy + 3*s, 1*s, 5*s);
+          g.fillStyle(0xffd700);
+          g.fillRect(6.5*s, oy + 5*s, 2*s, 1*s);
+          // Legs + peg leg
+          g.fillStyle(0x333333);
+          g.fillRect(2.5*s, oy + 8.5*s, 2*s, 1.5*s);
+          g.fillStyle(0xddcc88);
+          g.fillRect(5*s, oy + 8.5*s, 1*s, 1.5*s); // peg
+        } else {
+          // Monkey - climbing
+          g.fillStyle(0xaa8844);
+          g.fillRect(2*s, oy + 0*s, 4*s, 3*s); // head
+          g.fillStyle(0xddbb88);
+          g.fillRect(3*s, oy + 1*s, 2*s, 2*s); // face
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 1.5*s, 0.5*s, 0.5*s);
+          g.fillRect(4.5*s, oy + 1.5*s, 0.5*s, 0.5*s);
+          // Ears
+          g.fillStyle(0xddbb88);
+          g.fillRect(1.5*s, oy + 1*s, 1*s, 1*s);
+          g.fillRect(6*s, oy + 1*s, 1*s, 1*s);
+          // Body
+          g.fillStyle(0xaa8844);
+          g.fillRect(2*s, oy + 3*s, 4*s, 4*s);
+          // Long arms
+          g.fillRect(0*s, oy + 3*s, 2*s, 1*s);
+          g.fillRect(6*s, oy + 3*s, 2*s, 1*s);
+          // Tail (curly)
+          g.fillStyle(0x997733);
+          g.fillRect(6*s, oy + 5*s, 1*s, 3*s);
+          g.fillRect(7*s, oy + 7*s, 1*s, 1*s);
+          // Legs
+          g.fillStyle(0xaa8844);
+          g.fillRect(2*s, oy + 7*s, 1.5*s, 2*s);
+          g.fillRect(4.5*s, oy + 7*s, 1.5*s, 2*s);
+        }
+
+      } else if (style === 'cave') {
+        if (idx === 0) {
+          // Cave Troll - big and stony
+          g.fillStyle(0x556655);
+          g.fillRect(1*s, oy + 0*s, 6*s, 4*s); // big head
+          g.fillStyle(0xff4444);
+          g.fillRect(2*s, oy + 1.5*s, 1.5*s, 1*s);
+          g.fillRect(5*s, oy + 1.5*s, 1.5*s, 1*s);
+          // Underbite
+          g.fillStyle(0xeeddcc);
+          g.fillRect(3*s, oy + 3.5*s, 0.5*s, 0.5*s);
+          g.fillRect(4.5*s, oy + 3.5*s, 0.5*s, 0.5*s);
+          // Massive body
+          g.fillStyle(0x667766);
+          g.fillRect(0*s, oy + 4*s, 8*s, 4*s);
+          // Club
+          g.fillStyle(0x5a3a1a);
+          g.fillRect(7*s, oy + 1*s, 1.5*s, 6*s);
+          g.fillStyle(0x444444);
+          g.fillRect(6.5*s, oy + 0*s, 2.5*s, 2*s);
+          // Legs
+          g.fillStyle(0x556655);
+          g.fillRect(1*s, oy + 8*s, 2.5*s, 2*s);
+          g.fillRect(4.5*s, oy + 8*s, 2.5*s, 2*s);
+        } else if (idx === 1) {
+          // Fire Beetle - glowing
+          g.fillStyle(0xff4400);
+          g.fillRect(2*s, oy + 2*s, 4*s, 3*s); // body
+          g.fillStyle(0xff6600);
+          g.fillRect(1*s, oy + 2*s, 1*s, 3*s); // wing left
+          g.fillRect(6*s, oy + 2*s, 1*s, 3*s); // wing right
+          g.fillStyle(0xffaa00);
+          g.fillRect(3*s, oy + 3*s, 2*s, 1*s); // glowing core
+          // Head
+          g.fillStyle(0xcc3300);
+          g.fillRect(3*s, oy + 1*s, 2*s, 1.5*s);
+          // Antennae
+          g.fillStyle(0xff8800);
+          g.fillRect(3*s, oy + 0*s, 0.5*s, 1.5*s);
+          g.fillRect(4.5*s, oy + 0*s, 0.5*s, 1.5*s);
+          // Legs (6)
+          g.fillStyle(0xaa3300);
+          g.fillRect(1.5*s, oy + 5*s, 1*s, 2*s);
+          g.fillRect(3*s, oy + 5*s, 1*s, 2.5*s);
+          g.fillRect(5*s, oy + 5*s, 1*s, 2*s);
+        } else {
+          // Shadow Wisp - ethereal
+          g.fillStyle(0x8866cc, 0.7);
+          g.fillCircle(4*s, oy + 3*s, 2.5*s);
+          g.fillStyle(0xaa88dd, 0.5);
+          g.fillCircle(4*s, oy + 3*s, 1.5*s);
+          // Glowing eyes
+          g.fillStyle(0xffffff);
+          g.fillRect(3*s, oy + 2*s, 0.8*s, 0.8*s);
+          g.fillRect(4.5*s, oy + 2*s, 0.8*s, 0.8*s);
+          // Wispy tendrils
+          g.fillStyle(0x6644aa, 0.5);
+          g.fillRect(2*s, oy + 5*s, 1*s, 3*s);
+          g.fillRect(4*s, oy + 5.5*s, 1*s, 3*s);
+          g.fillRect(6*s, oy + 5*s, 1*s, 2.5*s);
+        }
+
+      } else if (style === 'castle') {
+        if (idx === 0) {
+          // Skeleton Knight - bony with armor
+          g.fillStyle(0xccccaa);
+          g.fillRect(3*s, oy + 0*s, 3*s, 2.5*s); // skull
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 1*s, 0.8*s, 0.8*s); // eye sockets
+          g.fillRect(5*s, oy + 1*s, 0.8*s, 0.8*s);
+          g.fillRect(4*s, oy + 2*s, 1*s, 0.5*s); // nose
+          // Armor
+          g.fillStyle(0x888888);
+          g.fillRect(2*s, oy + 2.5*s, 5*s, 4*s);
+          g.fillStyle(0xaaaaaa);
+          g.fillRect(3*s, oy + 3*s, 3*s, 1.5*s); // plate
+          // Sword
+          g.fillStyle(0xcccccc);
+          g.fillRect(7*s, oy + 1*s, 0.8*s, 6*s);
+          g.fillStyle(0xffd700);
+          g.fillRect(6.5*s, oy + 4*s, 2*s, 0.8*s);
+          // Bone legs
+          g.fillStyle(0xccccaa);
+          g.fillRect(2.5*s, oy + 6.5*s, 1.5*s, 3*s);
+          g.fillRect(5*s, oy + 6.5*s, 1.5*s, 3*s);
+        } else if (idx === 1) {
+          // Wraith - floating ghostly
+          g.fillStyle(0x6644aa, 0.6);
+          g.fillRect(2*s, oy + 0*s, 4*s, 3*s); // hood
+          g.fillStyle(0x5533aa, 0.5);
+          g.fillRect(1*s, oy + 3*s, 6*s, 5*s); // robes
+          g.fillRect(0*s, oy + 4*s, 1*s, 3*s); // sleeve
+          g.fillRect(7*s, oy + 4*s, 1*s, 3*s);
+          // Glowing eyes
+          g.fillStyle(0xff44ff);
+          g.fillRect(3*s, oy + 1*s, 0.8*s, 0.8*s);
+          g.fillRect(5*s, oy + 1*s, 0.8*s, 0.8*s);
+          // Fading bottom
+          g.fillStyle(0x4422aa, 0.3);
+          g.fillRect(1*s, oy + 8*s, 6*s, 2*s);
+        } else {
+          // Cursed Archer
+          g.fillStyle(0x884422);
+          g.fillRect(3*s, oy + 0*s, 3*s, 2.5*s); // head/hood
+          g.fillStyle(0xff4444);
+          g.fillRect(4*s, oy + 1*s, 0.5*s, 0.5*s); // eye
+          g.fillRect(5*s, oy + 1*s, 0.5*s, 0.5*s);
+          // Body
+          g.fillStyle(0x664422);
+          g.fillRect(2*s, oy + 2.5*s, 5*s, 4.5*s);
+          // Bow
+          g.fillStyle(0x8B4513);
+          g.fillRect(7*s, oy + 1*s, 0.5*s, 6*s);
+          g.fillStyle(0xcccccc);
+          g.fillRect(7*s, oy + 1*s, 0.3*s, 0.3*s);
+          g.fillRect(7*s, oy + 6.5*s, 0.3*s, 0.3*s);
+          // Arrow
+          g.fillStyle(0xdddddd);
+          g.fillRect(0*s, oy + 3.5*s, 7*s, 0.3*s);
+          g.fillStyle(0xff4444);
+          g.fillRect(0*s, oy + 3*s, 1*s, 1*s); // arrowhead
+          // Legs
+          g.fillStyle(0x553311);
+          g.fillRect(2.5*s, oy + 7*s, 1.5*s, 2.5*s);
+          g.fillRect(5*s, oy + 7*s, 1.5*s, 2.5*s);
+        }
+
+      } else if (style === 'void') {
+        if (idx === 0) {
+          // Eldrazi Spawn - alien tentacles
+          g.fillStyle(0xaa88cc);
+          g.fillRect(2*s, oy + 1*s, 4*s, 4*s); // body mass
+          g.fillStyle(0xcc99ee);
+          g.fillRect(3*s, oy + 0*s, 2*s, 1.5*s); // head protrusion
+          // Multiple eyes
+          g.fillStyle(0xffffff);
+          g.fillRect(2.5*s, oy + 2*s, 0.5*s, 0.5*s);
+          g.fillRect(4*s, oy + 1.5*s, 0.5*s, 0.5*s);
+          g.fillRect(5.5*s, oy + 2.5*s, 0.5*s, 0.5*s);
+          g.fillStyle(0x000000);
+          g.fillRect(2.5*s, oy + 2*s, 0.3*s, 0.3*s);
+          g.fillRect(4*s, oy + 1.5*s, 0.3*s, 0.3*s);
+          g.fillRect(5.5*s, oy + 2.5*s, 0.3*s, 0.3*s);
+          // Tentacles
+          g.fillStyle(0x8866aa);
+          g.fillRect(1*s, oy + 5*s, 1*s, 4*s);
+          g.fillRect(3*s, oy + 5*s, 1*s, 3.5*s);
+          g.fillRect(5*s, oy + 5*s, 1*s, 4*s);
+          g.fillRect(7*s, oy + 4*s, 1*s, 3*s);
+        } else if (idx === 1) {
+          // Void Tendril - writhing column
+          g.fillStyle(0x6633aa);
+          g.fillRect(3*s, oy + 0*s, 2*s, 9*s); // main tendril
+          g.fillStyle(0x7744bb);
+          g.fillRect(1*s, oy + 2*s, 2*s, 1*s); // branch
+          g.fillRect(5*s, oy + 4*s, 2*s, 1*s);
+          g.fillRect(1*s, oy + 6*s, 2*s, 1*s);
+          // Suckers
+          g.fillStyle(0xcc88ff);
+          g.fillRect(3.5*s, oy + 1*s, 1*s, 0.5*s);
+          g.fillRect(3.5*s, oy + 3*s, 1*s, 0.5*s);
+          g.fillRect(3.5*s, oy + 5*s, 1*s, 0.5*s);
+          g.fillRect(3.5*s, oy + 7*s, 1*s, 0.5*s);
+          // Tip
+          g.fillStyle(0xaa66dd);
+          g.fillRect(2.5*s, oy + 0*s, 3*s, 1*s);
+        } else {
+          // Mind Flayer - big brain alien
+          g.fillStyle(0x884488);
+          g.fillRect(2*s, oy + 0*s, 5*s, 3*s); // big head
+          g.fillStyle(0xaa66aa);
+          g.fillRect(3*s, oy - 1*s, 3*s, 2*s); // brain bulge
+          // Eyes (glowing)
+          g.fillStyle(0x00ffff);
+          g.fillRect(3*s, oy + 1.5*s, 1*s, 0.8*s);
+          g.fillRect(5*s, oy + 1.5*s, 1*s, 0.8*s);
+          // Face tentacles
+          g.fillStyle(0x996699);
+          g.fillRect(2.5*s, oy + 3*s, 0.8*s, 2*s);
+          g.fillRect(4*s, oy + 3*s, 0.8*s, 2.5*s);
+          g.fillRect(5.5*s, oy + 3*s, 0.8*s, 2*s);
+          // Robes
+          g.fillStyle(0x553355);
+          g.fillRect(2*s, oy + 4.5*s, 5*s, 4*s);
+          // Legs
+          g.fillStyle(0x442244);
+          g.fillRect(2.5*s, oy + 8.5*s, 2*s, 1.5*s);
+          g.fillRect(5*s, oy + 8.5*s, 2*s, 1.5*s);
+        }
+
+      // ===== FASHION ENEMIES =====
+      } else if (style === 'streets') {
+        if (idx === 0) {
+          // Business Person - suit, briefcase
+          g.fillStyle(0x333366);
+          g.fillRect(2*s, oy + 2*s, 4*s, 5*s); // suit
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 0*s, 2*s, 2.5*s); // face
+          g.fillStyle(0x222244);
+          g.fillRect(3*s, oy - 0.5*s, 2*s, 1*s); // hair
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 1*s, 0.5*s, 0.5*s);
+          g.fillRect(4.5*s, oy + 1*s, 0.5*s, 0.5*s);
+          // Tie
+          g.fillStyle(0xff0000);
+          g.fillRect(3.8*s, oy + 2.5*s, 0.5*s, 2*s);
+          // Briefcase
+          g.fillStyle(0x664422);
+          g.fillRect(6*s, oy + 4*s, 2*s, 1.5*s);
+          g.fillStyle(0xffd700);
+          g.fillRect(6.8*s, oy + 4.5*s, 0.5*s, 0.3*s);
+          // Legs
+          g.fillStyle(0x333366);
+          g.fillRect(2.5*s, oy + 7*s, 1.5*s, 2.5*s);
+          g.fillRect(4.5*s, oy + 7*s, 1.5*s, 2.5*s);
+        } else if (idx === 1) {
+          // Delivery Bike - person on bike
+          g.fillStyle(0x44aa44);
+          g.fillRect(2*s, oy + 1*s, 3*s, 3*s); // jacket
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 0*s, 2*s, 1.5*s); // face
+          g.fillStyle(0x44aa44);
+          g.fillRect(3*s, oy - 0.5*s, 2*s, 1*s); // helmet
+          // Bike
+          g.fillStyle(0x888888);
+          g.fillRect(0*s, oy + 5*s, 8*s, 1*s); // frame
+          g.fillStyle(0x444444);
+          g.fillCircle(1.5*s, oy + 7*s, 1.5*s); // back wheel
+          g.fillCircle(6.5*s, oy + 7*s, 1.5*s); // front wheel
+          // Backpack
+          g.fillStyle(0x44cc44);
+          g.fillRect(5*s, oy + 1*s, 2*s, 2.5*s);
+        } else {
+          // Puddle - splashy obstacle
+          g.fillStyle(0x4488cc, 0.7);
+          g.fillRect(0*s, oy + 5*s, 8*s, 2*s);
+          g.fillStyle(0x66aaee, 0.5);
+          g.fillRect(1*s, oy + 4*s, 6*s, 1*s);
+          // Splash drops
+          g.fillStyle(0x88ccff);
+          g.fillRect(2*s, oy + 2*s, 1*s, 2*s);
+          g.fillRect(5*s, oy + 1*s, 1*s, 3*s);
+          g.fillRect(3.5*s, oy + 3*s, 1*s, 1.5*s);
+          // Ripples
+          g.fillStyle(0xaaddff, 0.4);
+          g.fillRect(1*s, oy + 5.5*s, 2*s, 0.5*s);
+          g.fillRect(5*s, oy + 5.5*s, 2*s, 0.5*s);
+        }
+
+      } else if (style === 'boutique') {
+        if (idx === 0) {
+          // Rival Fashionista - sassy pose
+          g.fillStyle(0xff4488);
+          g.fillRect(3*s, oy - 0.5*s, 3*s, 2*s); // big hair
+          g.fillRect(2*s, oy + 0*s, 1*s, 2*s);
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 1*s, 3*s, 2*s); // face
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 1.5*s, 0.5*s, 0.5*s);
+          g.fillRect(5*s, oy + 1.5*s, 0.5*s, 0.5*s);
+          // Attitude (smirk)
+          g.fillStyle(0xff0066);
+          g.fillRect(4*s, oy + 2.5*s, 1.5*s, 0.3*s);
+          // Designer outfit
+          g.fillStyle(0xff1493);
+          g.fillRect(2*s, oy + 3*s, 5*s, 4*s);
+          g.fillStyle(0xffd700);
+          g.fillRect(4*s, oy + 3.5*s, 1*s, 1*s); // brooch
+          // Handbag
+          g.fillStyle(0xcc0066);
+          g.fillRect(7*s, oy + 4*s, 1.5*s, 2*s);
+          // Legs + heels
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 7*s, 1.5*s, 2*s);
+          g.fillRect(5*s, oy + 7*s, 1.5*s, 2*s);
+          g.fillStyle(0xff1493);
+          g.fillRect(3*s, oy + 9*s, 1.5*s, 0.5*s);
+          g.fillRect(5*s, oy + 9*s, 1.5*s, 0.5*s);
+        } else if (idx === 1) {
+          // Rolling Rack - clothes rack on wheels
+          g.fillStyle(0xaaaaaa);
+          g.fillRect(1*s, oy + 0*s, 0.5*s, 6*s); // pole left
+          g.fillRect(6.5*s, oy + 0*s, 0.5*s, 6*s); // pole right
+          g.fillRect(1*s, oy + 0*s, 6*s, 0.5*s); // bar
+          // Hangers with clothes
+          const clothColors = [0xff69b4, 0x4488ff, 0xffaa00, 0x44cc44];
+          for (let ci = 0; ci < 4; ci++) {
+            g.fillStyle(clothColors[ci]);
+            g.fillRect((1.5 + ci * 1.3)*s, oy + 1*s, 1*s, 4*s);
+          }
+          // Wheels
+          g.fillStyle(0x444444);
+          g.fillCircle(2*s, oy + 7*s, 0.8*s);
+          g.fillCircle(6*s, oy + 7*s, 0.8*s);
+        } else {
+          // Mannequin - creepy and stiff
+          g.fillStyle(0xeeddcc);
+          g.fillRect(3*s, oy + 0*s, 2.5*s, 2.5*s); // head
+          g.fillRect(2.5*s, oy + 2.5*s, 3.5*s, 4.5*s); // body
+          // No face (creepy)
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 1*s, 0.3*s, 0.3*s);
+          g.fillRect(5*s, oy + 1*s, 0.3*s, 0.3*s);
+          // Arms stuck out
+          g.fillStyle(0xeeddcc);
+          g.fillRect(0*s, oy + 3*s, 2.5*s, 1*s);
+          g.fillRect(6*s, oy + 3*s, 2.5*s, 1*s);
+          // Legs
+          g.fillRect(3*s, oy + 7*s, 1.5*s, 2.5*s);
+          g.fillRect(4.5*s, oy + 7*s, 1.5*s, 2.5*s);
+          // Stand
+          g.fillStyle(0x888888);
+          g.fillRect(2.5*s, oy + 9.5*s, 3.5*s, 0.5*s);
+        }
+
+      } else if (style === 'subway') {
+        if (idx === 0) {
+          // Turnstile - metallic barrier
+          g.fillStyle(0x888888);
+          g.fillRect(3*s, oy + 0*s, 2*s, 7*s); // post
+          g.fillStyle(0xaaaaaa);
+          g.fillRect(0*s, oy + 2*s, 8*s, 0.8*s); // arm 1
+          g.fillRect(0*s, oy + 5*s, 8*s, 0.8*s); // arm 2
+          // Reader
+          g.fillStyle(0x00ff00);
+          g.fillRect(3.5*s, oy + 7*s, 1*s, 0.5*s);
+        } else if (idx === 1) {
+          // Street Performer - musical
+          g.fillStyle(0xff6600);
+          g.fillRect(3*s, oy + 0*s, 2.5*s, 2*s); // beret
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 1.5*s, 2.5*s, 2*s); // face
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 2*s, 0.5*s, 0.5*s);
+          g.fillRect(5*s, oy + 2*s, 0.5*s, 0.5*s);
+          // Striped shirt
+          g.fillStyle(0x222222);
+          g.fillRect(2*s, oy + 3.5*s, 5*s, 4*s);
+          g.fillStyle(0xffffff);
+          g.fillRect(2*s, oy + 4.5*s, 5*s, 1*s);
+          g.fillRect(2*s, oy + 6.5*s, 5*s, 1*s);
+          // Guitar
+          g.fillStyle(0x8B4513);
+          g.fillRect(7*s, oy + 2*s, 1*s, 5*s);
+          g.fillStyle(0xddaa44);
+          g.fillCircle(7.5*s, oy + 6*s, 1.5*s);
+          // Legs
+          g.fillStyle(0x333333);
+          g.fillRect(2.5*s, oy + 7.5*s, 1.5*s, 2*s);
+          g.fillRect(5*s, oy + 7.5*s, 1.5*s, 2*s);
+        } else {
+          // Subway Rat
+          g.fillStyle(0x665544);
+          g.fillRect(1*s, oy + 4*s, 5*s, 2.5*s);
+          g.fillRect(0*s, oy + 3*s, 2*s, 2*s);
+          g.fillStyle(0xff4444);
+          g.fillRect(0.5*s, oy + 3.5*s, 0.5*s, 0.5*s);
+          g.fillStyle(0x997766);
+          g.fillRect(6*s, oy + 5*s, 2.5*s, 0.5*s); // long tail
+          g.fillStyle(0x554433);
+          g.fillRect(1*s, oy + 6.5*s, 1*s, 1.5*s);
+          g.fillRect(3*s, oy + 6.5*s, 1*s, 1.5*s);
+          g.fillRect(5*s, oy + 6.5*s, 1*s, 1*s);
+        }
+
+      } else if (style === 'backstage') {
+        if (idx === 0) {
+          // Makeup Artist - powder puffs flying
+          g.fillStyle(0xff88aa);
+          g.fillRect(3*s, oy - 0.5*s, 2.5*s, 1.5*s); // hair
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 0.5*s, 2.5*s, 2.5*s); // face
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 1.5*s, 0.5*s, 0.5*s);
+          g.fillRect(5*s, oy + 1.5*s, 0.5*s, 0.5*s);
+          // Smock
+          g.fillStyle(0xffffff);
+          g.fillRect(2*s, oy + 3*s, 5*s, 4.5*s);
+          g.fillStyle(0xff88aa);
+          g.fillRect(3*s, oy + 3.5*s, 3*s, 0.5*s); // stains
+          // Brush
+          g.fillStyle(0x8B4513);
+          g.fillRect(7*s, oy + 2*s, 0.5*s, 4*s);
+          g.fillStyle(0xff99bb);
+          g.fillRect(6.5*s, oy + 1*s, 1.5*s, 1.5*s);
+          // Legs
+          g.fillStyle(0x333333);
+          g.fillRect(3*s, oy + 7.5*s, 1.5*s, 2*s);
+          g.fillRect(5*s, oy + 7.5*s, 1.5*s, 2*s);
+        } else if (idx === 1) {
+          // Photographer - camera flash
+          g.fillStyle(0x444444);
+          g.fillRect(3*s, oy + 0*s, 2.5*s, 2*s); // head/cap
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 1.5*s, 2.5*s, 2*s);
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 2*s, 0.5*s, 0.5*s);
+          g.fillRect(5*s, oy + 2*s, 0.5*s, 0.5*s);
+          // Vest
+          g.fillStyle(0x444444);
+          g.fillRect(2*s, oy + 3.5*s, 5*s, 4*s);
+          // Camera
+          g.fillStyle(0x222222);
+          g.fillRect(0*s, oy + 3*s, 2.5*s, 2*s);
+          g.fillStyle(0x444466);
+          g.fillCircle(1.2*s, oy + 4*s, 0.8*s); // lens
+          // Flash
+          g.fillStyle(0xffff00, 0.6);
+          g.fillRect(0*s, oy + 2*s, 3*s, 1*s);
+          // Legs
+          g.fillStyle(0x333333);
+          g.fillRect(2.5*s, oy + 7.5*s, 1.5*s, 2*s);
+          g.fillRect(5*s, oy + 7.5*s, 1.5*s, 2*s);
+        } else {
+          // Tangled Cable - writhing mass
+          g.fillStyle(0x222222);
+          // Tangled loops
+          g.fillRect(1*s, oy + 2*s, 6*s, 1*s);
+          g.fillRect(0*s, oy + 4*s, 7*s, 1*s);
+          g.fillRect(2*s, oy + 6*s, 5*s, 1*s);
+          g.fillRect(1*s, oy + 2*s, 1*s, 3*s);
+          g.fillRect(6*s, oy + 3*s, 1*s, 4*s);
+          g.fillRect(3*s, oy + 5*s, 1*s, 3*s);
+          // Plug ends
+          g.fillStyle(0xffffff);
+          g.fillRect(0*s, oy + 4*s, 1*s, 1*s);
+          g.fillStyle(0xffff00);
+          g.fillRect(7*s, oy + 5*s, 1*s, 1*s);
+          // Sparks
+          g.fillStyle(0xffff00, 0.6);
+          g.fillRect(7.5*s, oy + 4*s, 0.5*s, 0.5*s);
+          g.fillRect(0.5*s, oy + 3*s, 0.5*s, 0.5*s);
+        }
+
+      } else if (style === 'runway') {
+        if (idx === 0) {
+          // Paparazzi Flash - blinding light person
+          g.fillStyle(0xffffaa);
+          g.fillRect(3*s, oy + 0*s, 2.5*s, 2.5*s); // head (overexposed)
+          g.fillStyle(0xffcc99);
+          g.fillRect(3.5*s, oy + 0.5*s, 1.5*s, 1.5*s);
+          g.fillStyle(0x000000);
+          g.fillRect(3.8*s, oy + 1*s, 0.5*s, 0.5*s);
+          g.fillRect(4.8*s, oy + 1*s, 0.5*s, 0.5*s);
+          // Body
+          g.fillStyle(0x333333);
+          g.fillRect(2*s, oy + 2.5*s, 5*s, 4.5*s);
+          // Camera + HUGE flash
+          g.fillStyle(0x222222);
+          g.fillRect(7*s, oy + 3*s, 1.5*s, 1.5*s);
+          g.fillStyle(0xffff88);
+          g.fillRect(7*s, oy + 1*s, 2*s, 2*s); // flash burst
+          g.fillStyle(0xffffff, 0.5);
+          g.fillRect(6*s, oy + 0*s, 3*s, 4*s);
+          // Legs
+          g.fillStyle(0x333333);
+          g.fillRect(2.5*s, oy + 7*s, 1.5*s, 2.5*s);
+          g.fillRect(5*s, oy + 7*s, 1.5*s, 2.5*s);
+        } else if (idx === 1) {
+          // Stage Hazard - loose floorboard/light
+          g.fillStyle(0xaa4444);
+          g.fillRect(1*s, oy + 3*s, 6*s, 2*s); // fallen light bar
+          g.fillStyle(0x888888);
+          g.fillRect(0*s, oy + 0*s, 1*s, 5*s); // pole
+          // Broken bulbs
+          g.fillStyle(0xffff00, 0.5);
+          g.fillRect(2*s, oy + 3.5*s, 1*s, 1*s);
+          g.fillRect(5*s, oy + 3.5*s, 1*s, 1*s);
+          // Sparks
+          g.fillStyle(0xffff00);
+          g.fillRect(3*s, oy + 1*s, 0.5*s, 2*s);
+          g.fillRect(6*s, oy + 2*s, 0.5*s, 1.5*s);
+          // Danger tape
+          g.fillStyle(0xffcc00);
+          g.fillRect(1*s, oy + 5*s, 6*s, 0.5*s);
+          g.fillStyle(0x000000);
+          for (let di = 1; di < 7; di++) g.fillRect(di*s, oy + 5*s, 0.3*s, 0.5*s);
+        } else {
+          // Heckler - grumpy audience member
+          g.fillStyle(0x664444);
+          g.fillRect(3*s, oy + 0*s, 2.5*s, 2*s); // messy hair
+          g.fillStyle(0xffcc99);
+          g.fillRect(3*s, oy + 1.5*s, 2.5*s, 2*s);
+          // Angry eyebrows
+          g.fillStyle(0x000000);
+          g.fillRect(3.5*s, oy + 1.5*s, 1*s, 0.3*s);
+          g.fillRect(5*s, oy + 1.5*s, 1*s, 0.3*s);
+          g.fillRect(3.5*s, oy + 2*s, 0.5*s, 0.5*s);
+          g.fillRect(5*s, oy + 2*s, 0.5*s, 0.5*s);
+          // Open yelling mouth
+          g.fillStyle(0x000000);
+          g.fillRect(4*s, oy + 3*s, 1*s, 0.5*s);
+          // Frumpy outfit
+          g.fillStyle(0x884444);
+          g.fillRect(2*s, oy + 3.5*s, 5*s, 4.5*s);
+          // Raised fist
+          g.fillStyle(0xffcc99);
+          g.fillRect(7*s, oy + 2*s, 1.5*s, 1.5*s);
+          // Legs
+          g.fillStyle(0x553333);
+          g.fillRect(2.5*s, oy + 8*s, 2*s, 2*s);
+          g.fillRect(5*s, oy + 8*s, 2*s, 2*s);
+        }
+
+      } else {
+        // Fallback generic enemies
+        const c = def.color;
+        const lighter = Phaser.Display.Color.IntegerToColor(c);
+        const darkC = Phaser.Display.Color.GetColor(
+          Math.max(0, lighter.red - 40),
+          Math.max(0, lighter.green - 40),
+          Math.max(0, lighter.blue - 40)
+        );
         g.fillStyle(c);
-        g.fillRect(1*s, oy + 2*s, 1*s, 3*s);
-        g.fillRect(6*s, oy + 2*s, 1*s, 3*s);
+        g.fillRect(2*s, oy + 1*s, 4*s, 6*s);
+        g.fillStyle(darkC);
+        g.fillRect(2.5*s, oy + 0*s, 3*s, 2*s);
+        g.fillStyle(0xff0000);
+        g.fillRect(3*s, oy + 0.5*s, 0.8*s, 0.8*s);
+        g.fillRect(5*s, oy + 0.5*s, 0.8*s, 0.8*s);
+        g.fillStyle(darkC);
+        g.fillRect(2*s, oy + 7*s, 1.5*s, 2*s);
+        g.fillRect(4.5*s, oy + 7*s, 1.5*s, 2*s);
       }
 
-      g.generateTexture(`enemy_${idx}`, 8*s, oy + 10*s);
+      g.generateTexture(`enemy_${idx}`, 9*s, oy + 11*s);
       g.destroy();
     });
   }
