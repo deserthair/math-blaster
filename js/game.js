@@ -23,7 +23,7 @@ const config = {
     min: { width: 400, height: 300 },
     max: { width: 1200, height: 900 }
   },
-  scene: [MenuScene, GameScene, GameOverScene]
+  scene: [MenuScene, SettingsScene, StorySelectScene, CutsceneScene, GameScene, GameOverScene, VictoryScene]
 };
 
 // Initialize the game when DOM is ready

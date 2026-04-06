@@ -104,22 +104,11 @@ class GameOverScene extends Phaser.Scene {
 
     // Play Again button
     const btnY = this.isHighScore ? 380 : 340;
-    this.createButton(width / 2, btnY, '▶ PLAY AGAIN', () => {
+    this.createButton(width / 2, btnY, 'PLAY AGAIN', () => {
       window.gameAudio.selectSound();
       this.cameras.main.fadeOut(400);
       this.time.delayedCall(400, () => {
-        this.scene.start('GameScene', { theme: this.theme });
-      });
-    });
-
-    // Switch Theme button
-    this.createButton(width / 2, btnY + 60, '🔄 SWITCH THEME', () => {
-      window.gameAudio.selectSound();
-      this.cameras.main.fadeOut(400);
-      this.time.delayedCall(400, () => {
-        this.scene.start('GameScene', {
-          theme: this.theme === 'mtg' ? 'fashion' : 'mtg'
-        });
+        this.scene.start('SettingsScene', { theme: this.theme });
       });
     });
 

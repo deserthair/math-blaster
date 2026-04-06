@@ -1,95 +1,55 @@
 /**
  * Math Problem Generator
- * Scales difficulty by level
+ * Progressive difficulty: level 1 = small numbers, each level gets harder
  */
 class MathGenerator {
   /**
-   * Generate a math problem based on difficulty level
-   * @param {number} level - Current game level (1-5+)
-   * @returns {{ question: string, answer: number, choices: number[] }}
+   * @param {number} level - Current game level (1+)
+   * @param {string} mathType - 'addition', 'subtraction', 'multiplication', 'division', or 'mixed'
+   * @returns {{ question: string, answer: number }}
    */
-  static generate(level) {
-    let a, b, op, answer, question;
-
-    switch (true) {
-      case level <= 1: // Addition (single digit)
-        a = Phaser.Math.Between(1, 9);
-        b = Phaser.Math.Between(1, 9);
-        answer = a + b;
-        question = `${a} + ${b}`;
-        break;
-
-      case level === 2: // Subtraction (no negatives)
-        a = Phaser.Math.Between(5, 18);
-        b = Phaser.Math.Between(1, a);
-        answer = a - b;
-        question = `${a} - ${b}`;
-        break;
-
-      case level === 3: // Multiplication (small)
-        a = Phaser.Math.Between(2, 9);
-        b = Phaser.Math.Between(2, 9);
-        answer = a * b;
-        question = `${a} × ${b}`;
-        break;
-
-      case level === 4: // Division (clean results)
-        b = Phaser.Math.Between(2, 9);
-        answer = Phaser.Math.Between(2, 9);
-        a = b * answer;
-        question = `${a} ÷ ${b}`;
-        break;
-
-      default: // Level 5+: Mixed, bigger numbers
-        const ops = ['+', '-', '×', '÷'];
-        op = Phaser.Math.RND.pick(ops);
-        if (op === '+') {
-          a = Phaser.Math.Between(10, 50);
-          b = Phaser.Math.Between(10, 50);
-          answer = a + b;
-          question = `${a} + ${b}`;
-        } else if (op === '-') {
-          a = Phaser.Math.Between(20, 99);
-          b = Phaser.Math.Between(1, a);
-          answer = a - b;
-          question = `${a} - ${b}`;
-        } else if (op === '×') {
-          a = Phaser.Math.Between(3, 12);
-          b = Phaser.Math.Between(3, 12);
-          answer = a * b;
-          question = `${a} × ${b}`;
-        } else {
-          b = Phaser.Math.Between(2, 12);
-          answer = Phaser.Math.Between(2, 12);
-          a = b * answer;
-          question = `${a} ÷ ${b}`;
-        }
-        break;
+  static generate(level, mathType) {
+    if (mathType === 'mixed') {
+      const types = ['addition', 'subtraction', 'multiplication', 'division'];
+      mathType = Phaser.Math.RND.pick(types);
     }
-
-    // Generate multiple choice options
-    const choices = MathGenerator.generateChoices(answer);
-
-    return { question, answer, choices };
+    return MathGenerator.generateByType(level, mathType);
   }
 
-  /**
-   * Generate 4 multiple choice options including the correct answer
-   */
-  static generateChoices(correct) {
-    const choices = new Set([correct]);
-    const range = Math.max(5, Math.floor(correct * 0.5));
+  static generateByType(level, type) {
+    let a, b, answer, question;
 
-    while (choices.size < 4) {
-      let wrong = correct + Phaser.Math.Between(-range, range);
-      if (wrong < 0) wrong = Math.abs(wrong) + 1;
-      if (wrong !== correct) choices.add(wrong);
+    // Progressive base number: level 1 → 1-2, level 2 → 3-4, level 3 → 5-6, etc.
+    const baseLow = (level - 1) * 2 + 1;
+    const baseHigh = level * 2;
+
+    if (type === 'addition') {
+      a = Phaser.Math.Between(baseLow, baseHigh);
+      b = Phaser.Math.Between(1, 10);
+      answer = a + b;
+      question = `${a} + ${b}`;
+    } else if (type === 'subtraction') {
+      // Ensure no negative answers
+      a = Phaser.Math.Between(baseLow, baseHigh) + 10;
+      b = Phaser.Math.Between(1, Math.min(a, 10));
+      answer = a - b;
+      question = `${a} - ${b}`;
+    } else if (type === 'multiplication') {
+      a = Phaser.Math.Between(baseLow, baseHigh);
+      b = Phaser.Math.Between(1, 10);
+      answer = a * b;
+      question = `${a} x ${b}`;
+    } else if (type === 'division') {
+      // Clean division — pick divisor and quotient, then compute dividend
+      b = Phaser.Math.Between(baseLow, baseHigh);
+      const quotient = Phaser.Math.Between(1, 10);
+      a = b * quotient;
+      answer = quotient;
+      question = `${a} / ${b}`;
     }
 
-    // Shuffle
-    return Phaser.Utils.Array.Shuffle([...choices]);
+    return { question, answer };
   }
 }
 
-// Make available globally
 window.MathGenerator = MathGenerator;
